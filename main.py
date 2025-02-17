@@ -1,11 +1,11 @@
-import json
-import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import AutoTokenizer, AutoModel, pipeline
+from transformers import AutoTokenizer, AutoModel
 import math
 import random
+import json
+import os
 
 class AngularVector:
     def __init__(self, angles):
@@ -185,7 +185,7 @@ class HierarchicalAngularEmbedding(nn.Module):
             total_weight += weight
         return total_similarity / total_weight if total_weight else 0.0
 
-    
+
     def save(self, path=None):
         if path is None:
           path = self.model_save_path
