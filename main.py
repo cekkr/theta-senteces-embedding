@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel, pipeline
 import math
 import random
 
 class AngularVector:
     def __init__(self, angles):
-        self.angles = angles  # Lista di angoli (tensore)
+        self.angles = angles  # Tensore degli angoli
 
     def similarity(self, other):
         diff = (self.angles - other.angles) / 2
@@ -16,85 +16,106 @@ class AngularVector:
     def __repr__(self):
         return f"AngularVector({self.angles.tolist()})"
 
+class ConceptClassifier(nn.Module):
+    #Classificatore di concetti per il training
+    def __init__(self, pretrained_model_name="bert-base-uncased", num_base_categories=4):
+        super().__init__()
+        self.tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name)
+        self.bert = AutoModel.from_pretrained(pretrained_model_name)
+        self.classifier = nn.Linear(self.bert.config.hidden_size, num_base_categories)
+
+        #Congela BERT
+        for param in self.bert.parameters():
+            param.requires_grad = False
+
+    def forward(self, text):
+        inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+        with torch.no_grad():
+            outputs = self.bert(**inputs)
+        pooled_output = outputs.pooler_output
+        logits = self.classifier(pooled_output)
+        return F.softmax(logits, dim=-1)
+
 
 class HierarchicalAngularEmbedding(nn.Module):
-    def __init__(self, pretrained_model_name="sentence-transformers/all-mpnet-base-v2", max_level=4,
-                 sentence_limit=512):
+    def __init__(self, pretrained_model_name="sentence-transformers/all-mpnet-base-v2",
+                 base_categories=4, max_level=4, sentence_limit=512):
         super().__init__()
         self.tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name)
         self.sentence_encoder = AutoModel.from_pretrained(pretrained_model_name)
+        self.base_categories = base_categories  # "Cosa, Quando, Come, Perché"
         self.max_level = max_level
-        self.sentence_limit = sentence_limit  # Limite token per frase
+        self.sentence_limit = sentence_limit
+
+        #Congela il sentence encoder
+        for param in self.sentence_encoder.parameters():
+            param.requires_grad = False
+
         self.angle_transformations = nn.ModuleList()
         for level in range(max_level + 1):
-            num_angles = 2**level
+            num_angles = base_categories * (2 ** level)
             self.angle_transformations.append(nn.Linear(self.sentence_encoder.config.hidden_size, num_angles))
-        for param in self.sentence_encoder.parameters():
-            param.requires_grad = False #Freeza i parametri, usalo solo per l'embed
+
 
     def forward(self, input_text, max_level_override=None):
-
         sentences = self.split_text(input_text)
-
         all_level_embeddings = []
-        for level in range(max_level_override if max_level_override is not None else self.max_level +1):
+
+        for level in range(max_level_override if max_level_override is not None else self.max_level + 1):
             level_embeddings = []
-
             for sentence in sentences:
+                encoded_input = self.tokenizer(sentence, padding='max_length', truncation=True,
+                                               return_tensors="pt", max_length=self.sentence_limit)
 
-              encoded_input = self.tokenizer(sentence, padding='max_length', truncation=True,
-                                            return_tensors="pt", max_length = self.sentence_limit)
+                with torch.no_grad():
+                    sentence_embedding = self.sentence_encoder(**encoded_input).last_hidden_state[:, 0, :]
 
-              with torch.no_grad():
-                sentence_embedding = self.sentence_encoder(**encoded_input).last_hidden_state[:, 0, :]
-
-              angles = torch.remainder(torch.sigmoid(self.angle_transformations[level](sentence_embedding)) * math.pi, math.pi)
-
-              level_embeddings.append(AngularVector(angles.squeeze()))
-
+                num_angles = self.base_categories * (2 ** level)
+                angles = torch.remainder(torch.sigmoid(self.angle_transformations[level](sentence_embedding)) * math.pi, math.pi)
+                level_embeddings.append(AngularVector(angles.squeeze()))
             all_level_embeddings.append(level_embeddings)
 
-        return self.group_embeddings(all_level_embeddings) #Raggruppamento in array ricorsivi
+        return self.group_embeddings(all_level_embeddings)
+
 
     def split_text(self, text):
-        #Divisione "intelligente" del testo
         sentences = []
         current_sentence = []
         tokens = self.tokenizer.tokenize(text)
         for token in tokens:
             current_sentence.append(token)
-            if token in ['.', '?', '!', ';'] or len(current_sentence) >= self.sentence_limit - 5:  # -5 per padding
-              sentences.append(self.tokenizer.convert_tokens_to_string(current_sentence))
-              current_sentence = []
-        if current_sentence:  # Aggiungi l'ultima frase, se esiste
+            if token in ['.', '?', '!', ';'] or len(current_sentence) >= self.sentence_limit - 5:
+                sentences.append(self.tokenizer.convert_tokens_to_string(current_sentence))
+                current_sentence = []
+        if current_sentence:
             sentences.append(self.tokenizer.convert_tokens_to_string(current_sentence))
 
         if not sentences:
-            sentences = [""] #Se è vuoto, aggiungi stringa vuota
+          sentences = [""]
 
         return sentences
 
-
     def group_embeddings(self, all_level_embeddings):
-        # Raggruppa gli embedding in una struttura ricorsiva di array
-        def recursive_grouping(level, embeddings):
-            if level == 0:
-                return embeddings
-            grouped = []
-            for i in range(0, len(embeddings), 2):
-                if i + 1 < len(embeddings):
-                    grouped.append([embeddings[i], embeddings[i + 1]])
-                else:
-                    grouped.append([embeddings[i]])  # Se dispari, aggiungi singolarmente
-            return recursive_grouping(level - 1, grouped)
+      def recursive_grouping(level, num_groups, embeddings):
+          if level == 0:
+              return embeddings
+          grouped = []
+          group_size = len(embeddings) // num_groups
+          for i in range(num_groups):
+              start = i * group_size
+              end = (i + 1) * group_size if i < num_groups -1 else len(embeddings) #Gestione ultimo gruppo
+              grouped.append(embeddings[start:end])
+          return recursive_grouping(level-1, num_groups * 2, grouped)
 
-        result = []
-        for level_embeddings in all_level_embeddings:
-          result.append(recursive_grouping(len(level_embeddings)-1, level_embeddings)) #Usa la funzione ricorsiva
-        return result
+      result = []
+      for level, level_embeddings in enumerate(all_level_embeddings):
+        num_groups = self.base_categories * (2**level)  #Modifica qui
+        result.append(recursive_grouping(level, self.base_categories, level_embeddings))  # Inizia con self.base_categories
+      return result
+
+
 
     def compute_similarity(self, embeddings1, embeddings2):
-        # Calcola la similarità tra due gerarchie di AngularVector
         def recursive_similarity(group1, group2):
             if isinstance(group1, AngularVector):
                 return group1.similarity(group2).mean()
@@ -102,7 +123,6 @@ class HierarchicalAngularEmbedding(nn.Module):
             similarities = []
             for subgroup1, subgroup2 in zip(group1, group2):
                 similarities.append(recursive_similarity(subgroup1, subgroup2))
-
             return sum(similarities) / len(similarities) if similarities else 0.0
 
 
@@ -110,35 +130,60 @@ class HierarchicalAngularEmbedding(nn.Module):
         total_weight = 0.0
 
         for level in range(len(embeddings1)):
-          level_similarity = recursive_similarity(embeddings1[level][0], embeddings2[level][0]) #Aggiungi [0]
+          level_similarity = recursive_similarity(embeddings1[level][0], embeddings2[level][0])
           weight = 2** level
           total_similarity += level_similarity * weight
           total_weight += weight
 
-        return total_similarity/total_weight if total_weight else 0.0
+        return total_similarity / total_weight if total_weight else 0.0
+
 
 class CustomLoss(nn.Module):
-    def __init__(self, margin=0.1):
+    def __init__(self, margin=0.1, classification_weight=0.5):
         super().__init__()
         self.margin = margin
+        self.classification_weight = classification_weight
+        self.concept_classifier = ConceptClassifier() #Istanza del classificatore
+        self.cross_entropy = nn.CrossEntropyLoss()
 
-    def forward(self, embeddings1, embeddings2, target):
+
+    def forward(self, embeddings1, embeddings2, target, text1, text2):
+        similarity_loss = self.similarity_loss(embeddings1, embeddings2, target)
+        classification_loss = self.classification_loss(text1, text2)
+
+        return (1 - self.classification_weight) * similarity_loss + self.classification_weight * classification_loss
+
+
+    def similarity_loss(self, embeddings1, embeddings2, target):
         similarity = model.compute_similarity(embeddings1, embeddings2)
-        loss = torch.mean((1 - target) * torch.pow(similarity, 2) +
-                        target * torch.pow(torch.clamp(self.margin - similarity, min=0.0), 2))
-        return loss
+        return torch.mean((1 - target) * torch.pow(similarity, 2) +
+                            target * torch.pow(torch.clamp(self.margin - similarity, min=0.0), 2))
+
+    def classification_loss(self, text1, text2):
+        #Classificazione e loss per text1
+        logits1 = self.concept_classifier(text1)
+        target1 = torch.argmax(logits1, dim=-1) #Usa argmax come target
+
+        #Classificazione e loss per text2
+        logits2 = self.concept_classifier(text2)
+        target2 = torch.argmax(logits2, dim =-1)
+
+        return (self.cross_entropy(logits1, target1) + self.cross_entropy(logits2, target2))/2
+
+
 
 # --- Training ---
 model = HierarchicalAngularEmbedding()
 criterion = CustomLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-#Dati di esempio: Coppie di frasi e target (1 = simile, -1 = diverso)
+
 dummy_data = [
-    ("This is a sentence. This is another sentence.", "These sentences are related. They are quite similar.", 1.0),
-    ("Completely unrelated text here.", "Something different altogether.", -1.0),
-    ("A long sentence that spans multiple parts, with commas and conjunctions.", "A similar long sentence, broken down into its components.", 1.0),
-     ("Short and concise.", "Brief and to the point.", 1.0)
+    ("The cat sat on the mat. It was a fluffy cat.", "A fluffy cat was sitting on the mat.", 1.0),
+    ("The sun is shining brightly. Birds are singing.", "It's a sunny day. The birds sing.", 1.0),
+    ("The car is red. It has four wheels.", "The bicycle is blue. It has two wheels.", -1.0),
+    ("What is the meaning of life?", "The meaning of life is subjective.", 1.0),
+     ("He went to the store to buy groceries.", "She purchased food items at the supermarket", 1.0)
 ]
 
 num_epochs = 50
@@ -151,24 +196,20 @@ for epoch in range(num_epochs):
         embeddings2 = model(text2)
 
         target = torch.tensor(target_val, dtype=torch.float32, requires_grad=False)
-        loss = criterion(embeddings1, embeddings2, target)
+        loss = criterion(embeddings1, embeddings2, target, text1, text2)  # Passa anche i testi
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {total_loss / len(dummy_data):.4f}")
 
-
 # --- Inferenza ---
-text1 = "This is a test sentence. Let's see how it works."
-text2 = "A testing sentence. We want to check the similarity."
+text1 = "The dog barked at the mailman. He was very angry."
+text2 = "A dog was barking. The mailman was the target."
 
 with torch.no_grad():
     embeddings1 = model(text1)
-    embeddings2 = model(text2, max_level_override=2)  # Forza un livello massimo
+    embeddings2 = model(text2, max_level_override=3)
     similarity = model.compute_similarity(embeddings1, embeddings2)
     print(f"Similarity: {similarity:.4f}")
-
-print("Embeddings 1:", embeddings1) #Visualizza gli embeddings
-print("Embeddings 2:", embeddings2)
-
-# memo: https://aistudio.google.com/prompts/1IRInLrLUF8FqJjfVHE7P4Ue0VU3FaKTE?pli=1
+print("Embeddings1", embeddings1)
+print("Embeddings2", embeddings2)
