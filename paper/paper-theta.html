@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>paper</title>
+
+
+<style type="text/css">
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb
+}
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 1000px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+  body {
+    padding: 2cm; 
+  }
+}
+</style>
+
+
+</head>
+
+<body>
+
+<p><strong>Author:</strong> Riccardo Cecchini (rcecchini.ds@gmail.com) <span style="min-width:400px; display: inline-block;"></span> 21 Feb 2025</p>
+
+<h1 id="toc_0">Angular Embeddings: A Novel Hierarchical Representation for Natural Language Semantics</h1>
+
+<p><strong>Abstract:</strong></p>
+
+<p>Sentence embedding techniques are fundamental to numerous natural language processing tasks. Traditional methods, while powerful, often struggle with high dimensionality, lack inherent structure, and can be difficult to interpret. This paper introduces <em>angular embeddings</em>, a novel approach that represents semantic information using angles within a hierarchical framework. We depart from conventional Cartesian coordinate systems, embracing a circular topology where each dimension is characterized by an angle. This naturally encodes similarity and offers a bounded representation. We further enhance this concept with a <em>three-pole</em> angular representation, significantly enriching the expressiveness within each dimension. We present the mathematical foundations of both two-pole and three-pole angular embeddings, detail a hierarchical model architecture leveraging pre-trained sentence encoders, and discuss training procedures with a combined similarity and concept classification loss. We conclude by outlining potential avenues for future research and applications.</p>
+
+<p><strong>Introduction:</strong></p>
+
+<p>The quest for meaningful numerical representations of text, particularly at the sentence level, is a cornerstone of modern natural language processing. Sentence embeddings, which map sentences to fixed-size vectors, are essential for tasks ranging from semantic search and question answering to machine translation and text summarization. While techniques like averaging word embeddings (Word2Vec, GloVe) provide a simple baseline, they often fail to capture the nuances of sentence-level meaning. More sophisticated approaches, such as Sentence Transformers based on architectures like BERT and RoBERTa, have achieved remarkable success. However, these models often operate in high-dimensional spaces, making them computationally expensive and difficult to interpret. Furthermore, the lack of inherent structure in these vector spaces can hinder generalization and make the models susceptible to adversarial attacks.</p>
+
+<p>This paper proposes a departure from the conventional Cartesian representation of sentence embeddings. We introduce <em>angular embeddings</em>, a novel framework that leverages the properties of angles to encode semantic information. Instead of representing each dimension as a coordinate along an axis, we represent it as an angle on a circle. This seemingly simple change has profound implications. First, it introduces a natural notion of similarity based on angular distance. Second, it provides a bounded representation, mitigating some of the issues associated with high dimensionality. Third, it opens the door to hierarchical representations that capture semantic information at multiple levels of granularity.</p>
+
+<p>We begin by formalizing the concept of two-pole angular embeddings, where each dimension is characterized by a single angle, and similarity is determined by the squared cosine of half the angular difference. We then introduce a significant extension: <em>three-pole angular embeddings</em>. This innovation addresses a fundamental limitation of the two-pole representation, namely its inability to capture more than two opposing concepts within a single dimension. By introducing three poles, analogous to the primary colors red, green, and blue, we significantly increase the representational capacity of each angular dimension.</p>
+
+<p>The angular embeddings are organized into a hierarchical structure, inspired by the multi-faceted nature of meaning. At the highest level, we posit a set of fundamental semantic categories – for instance, &quot;what,&quot; &quot;when,&quot; &quot;how,&quot; and &quot;why&quot; – that provide a coarse-grained representation of the sentence. Subsequent levels refine this representation, with each level branching into subcategories, creating a tree-like structure. This hierarchical organization allows the model to capture both general and specific aspects of meaning.</p>
+
+<p><strong>Related Work:</strong></p>
+
+<p>The field of sentence embeddings has a rich history. Early methods, such as Bag-of-Words and TF-IDF, while simple and interpretable, lack the ability to capture semantic relationships. Distributed representations of words, like Word2Vec and GloVe, marked a significant advance, but their application to sentence-level meaning often requires averaging, which can lead to information loss. The advent of recurrent neural networks (RNNs) and long short-term memory networks (LSTMs) allowed for modeling sequential dependencies, but these models can struggle with long-range dependencies. The transformer architecture, with its self-attention mechanism, has revolutionized the field, leading to state-of-the-art results in various NLP tasks. Sentence Transformers, which fine-tune pre-trained transformer models for sentence-level tasks, represent the current state of the art.</p>
+
+<p>Our work builds upon this foundation but introduces a fundamentally different representational paradigm. While most existing methods operate in Euclidean space, our angular embeddings reside on a circular manifold. This connects our work to research on directional statistics and the von Mises-Fisher distribution, which is commonly used to model data on spheres. Spherical embeddings have also found applications in areas like recommendation systems, where they can capture cyclical patterns.</p>
+
+<p>Hierarchical models have a long history in NLP, particularly in areas like parsing and discourse analysis. Recursive neural networks have been used to model tree-structured data, and hierarchical attention networks have been applied to document classification and summarization. Our hierarchical angular embeddings share some similarities with these approaches, but they differ in their fundamental representation and their focus on capturing a broad spectrum of semantic information.</p>
+
+<p><strong>Theta Vector Representation: A Mathematical Framework</strong></p>
+
+<p>We now delve into the mathematical formalization of theta vectors, beginning with the two-pole variant and then extending it to the more expressive three-pole representation.</p>
+
+<p><strong>Two-Pole Theta Vectors:</strong></p>
+
+<p>Let <em>θ</em> represent an angle in the range [0, π]. A two-pole theta vector of dimension <em>d</em> is simply a collection of <em>d</em> such angles:  <strong>θ</strong> = (θ₁, θ₂, ..., θ<sub>d</sub>). The core of the two-pole representation lies in its similarity function. Given two angles, θ₁ and θ₂, their similarity is defined as:</p>
+
+<p>sim(θ₁, θ₂) = cos²((θ₁ - θ₂) / 2)</p>
+
+<p>This function possesses several desirable properties. First, it is bounded between 0 and 1, providing a normalized measure of similarity. Second, it is symmetric: sim(θ₁, θ₂) = sim(θ₂, θ₁). Third, it reaches its maximum value of 1 when θ₁ = θ₂ and its minimum value of 0 when θ₁ and θ₂ are diametrically opposite (i.e., |θ₁ - θ₂| = π). This aligns with the intuitive notion of similarity on a circle. The similarity between two <em>d</em>-dimensional theta vectors, <strong>θ</strong><sup>(1)</sup> and <strong>θ</strong><sup>(2)</sup>, can be computed as the average similarity of their corresponding angles:</p>
+
+<p>sim(<strong>θ</strong><sup>(1)</sup>, <strong>θ</strong><sup>(2)</sup>) = (1/d) Σ<sub>i=1</sub><sup>d</sup> sim(θ₁<sup>(1)</sup>, θᵢ<sup>(2)</sup>)</p>
+
+<p><strong>Three-Pole Theta Vectors:</strong></p>
+
+<p>While the two-pole representation offers advantages over Cartesian coordinates, it is inherently limited in its ability to capture complex relationships within a single dimension. Consider the analogy of color representation. A single dimension with two poles can represent a spectrum from red to cyan, but it cannot capture the full richness of a color wheel with red, green, and blue.</p>
+
+<p>To address this limitation, we introduce the three-pole theta vector.  Crucially, each dimension is <em>still</em> represented by a single angle, θ ∈ <a href="or%20equivalently,%20%5B0,%20%CF%80%5D%20with%20appropriate%20adjustments%20to%20the%20similarity%20function">0, 2π</a>. The three-pole concept manifests in the <em>similarity function</em>. Given two angles, θ₁ and θ₂, their three-pole similarity is defined as:</p>
+
+<p>sim<sub>3pole</sub>(θ₁, θ₂) = max(cos²((θ₁ - θ₂) / 2), cos²((θ₁ - θ₂ + 2π/3) / 2), cos²((θ₁ - θ₂ - 2π/3) / 2))</p>
+
+<p>This function takes the maximum similarity across three possible &quot;alignments&quot; of the angles: a direct comparison (θ₁ - θ₂), a comparison after shifting θ₂ by 2π/3 (120 degrees), and a comparison after shifting θ₂ by -2π/3 (or equivalently, 4π/3 or 240 degrees).  This effectively introduces three &quot;poles&quot; of attraction on the circle, analogous to the primary colors. The similarity between two <em>d</em>-dimensional three-pole theta vectors is computed, as before, by averaging the similarities of their corresponding angles.</p>
+
+<p>An alternative, and mathematically equivalent, formulation of the three-pole similarity can be achieved using complex numbers. Represent each angle θ as a complex number on the unit circle:  z = exp(iθ).  Then, the three-pole similarity can be expressed as:</p>
+
+<p>sim<sub>3pole</sub>(θ₁, θ₂) = |(z₁ * conj(z₂))<sup>3</sup> + (conj(z₁) * z₂)<sup>3</sup>| / 2</p>
+
+<p>Where <code>conj(z)</code> is the complex conjugate of z. This formulation highlights the rotational invariance of the three-pole similarity.</p>
+
+<p><strong>Hierarchical Theta Vectors:</strong></p>
+
+<p>To capture semantic information at multiple levels of granularity, we construct a hierarchical representation. At the top level (level 0), we have a set of <em>base_categories</em> theta vectors, representing fundamental semantic aspects (e.g., &quot;what,&quot; &quot;when,&quot; &quot;how,&quot; &quot;why&quot;). Each subsequent level refines these categories.  At level <em>l</em>, each of the <em>base_categories</em> vectors from level <em>l</em>-1 is expanded into 2<sup>l</sup> sub-vectors.  This creates a tree-like structure where each node represents a theta vector, and the children of a node represent more specific aspects of the concept represented by the parent.</p>
+
+<p>The number of angular dimensions in each theta vector can vary across levels.  A common strategy is to increase the dimensionality with each level, allowing for finer-grained distinctions at lower levels of the hierarchy.  Alternatively, the dimensionality could be kept constant, or even decreased, depending on the specific application.</p>
+
+<p><strong>Model Architecture and Training</strong></p>
+
+<p>The hierarchical theta vector representation is incorporated into a neural network model for sentence embedding. The model consists of the following key components:</p>
+
+<ol>
+<li><p><strong>Sentence Encoder:</strong> A pre-trained Sentence Transformer (e.g., all-mpnet-base-v2) is used to obtain a dense vector representation of each input sentence. This provides a strong starting point, leveraging the knowledge encoded in the pre-trained model. The sentence encoder&#39;s weights are typically frozen during training to preserve its general-purpose knowledge.</p></li>
+<li><p><strong>Angle Transformation Modules:</strong> For each level of the hierarchy, a separate <em>angle transformation module</em> is employed. This module maps the output of the sentence encoder to a set of angles representing the theta vector at that level. Several options exist for the architecture of this module:</p>
+
+<ul>
+<li><p><strong>Single Linear Layer:</strong> The simplest approach is to use a single linear layer, mapping the sentence encoder&#39;s output directly to the desired number of angles. This is computationally efficient but may lack the capacity to capture complex non-linear relationships.</p></li>
+<li><p><strong>Multi-Layer Perceptron (MLP):</strong> A more powerful approach is to use an MLP with one or more hidden layers. This allows the model to learn more complex mappings from the sentence encoder&#39;s output to the angular space. The choice of activation function (ReLU, sigmoid, tanh) can influence the model&#39;s behavior.</p></li>
+<li><p><strong>Custom Architectures:</strong> More specialized architectures, such as convolutional or recurrent networks, could also be explored, particularly if the input text has specific structural properties.</p></li>
+</ul></li>
+<li><p><strong>Hierarchical Grouping:</strong> The outputs of the angle transformation modules are organized into a hierarchical structure, as described earlier. This is achieved through a recursive grouping process, resulting in nested lists of <code>AngularVector</code> (or <code>ThreePoleAngularVector</code>) instances.</p></li>
+<li><p><strong>Similarity Computation:</strong> To compare two sentence embeddings, a recursive similarity function is used. This function traverses the hierarchical structures of the two embeddings, computing the similarity between corresponding theta vectors at each level and averaging the results. The specific similarity function used depends on whether two-pole or three-pole theta vectors are employed.</p></li>
+</ol>
+
+<p><strong>Training Procedure:</strong></p>
+
+<p>The model is trained using a dataset of sentence pairs with associated similarity labels (e.g., 1 for similar pairs, -1 for dissimilar pairs). The training objective is to minimize a loss function that encourages similar sentences to have similar theta vector representations and dissimilar sentences to have dissimilar representations.</p>
+
+<p>Several loss function options can be considered:</p>
+
+<ol>
+<li><p><strong>Cosine Embedding Loss (Adapted):</strong> The standard cosine embedding loss can be adapted to the angular setting by replacing the cosine similarity with the appropriate angular similarity function (either two-pole or three-pole).</p></li>
+<li><p><strong>Margin Ranking Loss:</strong> This loss function encourages the similarity score for a positive pair to be higher than the similarity score for a negative pair by a certain margin.</p></li>
+<li><p><strong>Contrastive Loss:</strong> This loss function pushes positive pairs closer together in the embedding space and negative pairs farther apart.</p></li>
+<li><p><strong>Combined Similarity and Classification Loss:</strong> To further guide the learning process, a <em>concept classification loss</em> can be incorporated. This involves training an auxiliary classifier to predict the base category (e.g., &quot;what,&quot; &quot;when,&quot; &quot;how,&quot; &quot;why&quot;) of each input sentence. The cross-entropy loss from this classifier is then combined with the similarity loss, providing a regularization signal that encourages the theta vectors to align with these fundamental semantic categories. This additional loss term can improve the interpretability and semantic coherence of the embeddings. The relative weighting of similarity loss and classification loss can be adjusted using a hyperparameter.</p></li>
+</ol>
+
+<p>The model is trained using a standard optimization algorithm, such as Adam, with appropriate hyperparameter tuning (learning rate, batch size, etc.).</p>
+
+<p><strong>Alternative Similarity Measures and Distance Metrics</strong>
+While cosine similarity (adapted for angles) is a natural choice, other distance or similarity metrics could be used. For example, using a von-Mises distribution, to calculate the probability density of an angle. Or, defining a distance as the geodesic distance on the n-sphere.</p>
+
+<p><strong>Future Research Directions:</strong></p>
+
+<p>Several promising avenues for future research exist:</p>
+
+<ul>
+<li>  <strong>Exploring Different Similarity Functions:</strong> Investigating alternative similarity functions for theta vectors, beyond the cosine-based approaches. This could involve exploring metrics from directional statistics or developing novel functions tailored to the three-pole representation.</li>
+<li>  <strong>Adaptive Hierarchy Depth:</strong> Developing methods for dynamically determining the optimal depth of the hierarchy for a given input, rather than using a fixed maximum level.</li>
+<li>  <strong>Applications to Other NLP Tasks:</strong> Applying theta vectors to a wider range of NLP tasks, such as text classification, question answering, and machine translation.</li>
+<li>  <strong>Theoretical Analysis:</strong> Conducting a more in-depth theoretical analysis of the properties of theta vectors, including their representational capacity and generalization capabilities.</li>
+<li>  <strong>Connections to Cognitive Science:</strong> Exploring potential connections between theta vectors and cognitive models of semantic representation.</li>
+<li><strong>Alternative Base Categories</strong>: Instead of &quot;what, when, where, why&quot;, exploring other options, such as using WordNet, or other ontologies.</li>
+</ul>
+
+<p><strong>Conclusion:</strong></p>
+
+<p>Angular embeddings offer a novel and promising approach to sentence representation. By embracing a circular topology and a hierarchical structure, they provide a bounded, interpretable, and potentially more robust alternative to traditional Cartesian embeddings. The introduction of three-pole theta vectors further enhances the representational capacity, allowing for the capture of more nuanced semantic relationships. While this paper has laid out the foundational concepts and a basic model architecture, numerous avenues for future research remain, promising to further unlock the potential of this approach. The inherent structure and interpretability of angular embeddings, combined with their potential for capturing complex semantic relationships, make them a compelling area for continued investigation.</p>
+
+<h2 id="toc_1">Pseudocode examples</h2>
+
+<p>Code autogenerated with prompts.</p>
+
+<div>
+
+<pre style="font-family:monospace;color: rgb(201, 209, 217); background-color: rgb(13, 17, 23); font-weight: 400; "><span style="color: rgb(139, 148, 158); font-weight: 400;"># --- Fundamental Angle Handling Functions ---</span>
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> ensure_angle_range(<span style="color: rgb(255, 166, 87); font-weight: 400;">angles:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">two_pole:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">BOOLEAN</span> = <span style="color: rgb(210, 168, 255); font-weight: 400;">True</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Ensures angles are within the valid range.</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">IF</span> <span style="color: rgb(255, 166, 87); font-weight: 400;">two_pole:</span>
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> angles % math.pi  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Modulo pi for [0, pi]</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">ELSE</span>:
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> angles % (<span style="color: rgb(121, 192, 255); font-weight: 400;">2</span> * math.pi)  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Modulo 2pi for [0, 2pi]</span>
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> two_pole_similarity(<span style="color: rgb(255, 166, 87); font-weight: 400;">theta1:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">theta2:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Computes the two-pole similarity between two angles (or tensors of angles).</span>
+    diff = (theta1 - theta2) / <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> torch.cos(diff) ** <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> three_pole_similarity(<span style="color: rgb(255, 166, 87); font-weight: 400;">theta1:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">theta2:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Computes the three-pole similarity.</span>
+    diff = (theta1 - theta2) / <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>
+    similarity1 = torch.cos(diff) ** <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>
+    similarity2 = torch.cos(diff + (math.pi / <span style="color: rgb(121, 192, 255); font-weight: 400;">3</span>)) ** <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>  <span style="color: rgb(139, 148, 158); font-weight: 400;"># +120 degrees</span>
+    similarity3 = torch.cos(diff - (math.pi / <span style="color: rgb(121, 192, 255); font-weight: 400;">3</span>)) ** <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>  <span style="color: rgb(139, 148, 158); font-weight: 400;"># -120 degrees</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> torch.max(torch.stack([similarity1, similarity2, similarity3]), dim=<span style="color: rgb(121, 192, 255); font-weight: 400;">0</span>).values
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> two_pole_distance(<span style="color: rgb(255, 166, 87); font-weight: 400;">theta1:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">theta2:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Angular distance (two-pole).  Takes the smaller angle between the two.</span>
+    diff = torch.abs(theta1 - theta2)
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> torch.min(diff, math.pi - diff)
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> three_pole_distance(<span style="color: rgb(255, 166, 87); font-weight: 400;">theta1:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">theta2:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Angular distance (three-pole).</span>
+    diff = torch.abs(theta1 - theta2)
+    distance1 = torch.min(diff, <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span> * math.pi - diff)
+    distance2 = torch.min(torch.abs(theta1 - theta2 + <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>*math.pi/<span style="color: rgb(121, 192, 255); font-weight: 400;">3</span>), <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>*math.pi - torch.abs(theta1-theta2 + <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>*math.pi/<span style="color: rgb(121, 192, 255); font-weight: 400;">3</span>) )
+    distance3 = torch.min(torch.abs(theta1 - theta2 - <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>*math.pi/<span style="color: rgb(121, 192, 255); font-weight: 400;">3</span>), <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>*math.pi - torch.abs(theta1-theta2 - <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>*math.pi/<span style="color: rgb(121, 192, 255); font-weight: 400;">3</span>))
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> torch.min(torch.stack([distance1, distance2, distance3]), dim=<span style="color: rgb(121, 192, 255); font-weight: 400;">0</span>).values
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> circular_mean(<span style="color: rgb(255, 166, 87); font-weight: 400;">angles:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Computes the circular mean of a tensor of angles.</span>
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Using the trigonometric method (more stable than complex number method for backpropagation).</span>
+    sum_sin = torch.sum(torch.sin(angles))
+    sum_cos = torch.sum(torch.cos(angles))
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> torch.atan2(sum_sin, sum_cos)
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> angular_addition(<span style="color: rgb(255, 166, 87); font-weight: 400;">angle1:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">angle2:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">two_pole:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">BOOLEAN</span> = <span style="color: rgb(210, 168, 255); font-weight: 400;">True</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Adds two angles, ensuring the result is within the valid range.</span>
+    sum_angles = angle1 + angle2
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> ensure_angle_range(sum_angles, two_pole)
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> angular_scalar_multiplication(<span style="color: rgb(255, 166, 87); font-weight: 400;">angle:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">scalar:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">SCALAR</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">two_pole:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">BOOLEAN</span> = <span style="color: rgb(210, 168, 255); font-weight: 400;">True</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Multiplies an angle by a scalar, ensuring the result is within the valid range.</span>
+    product_angle = angle * scalar
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> ensure_angle_range(product_angle, two_pole)
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># --- Classes ---</span>
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">CLASS</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>: <span style="color: rgb(139, 148, 158); font-weight: 400;">#Added TwoPole Class</span>
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Represents a single vector using two-pole angles.</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">ATTRIBUTES</span>:
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">angles:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Angles in radians</span>
+
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">METHODS</span>:
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">INIT</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">angles:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>):
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Constructor.  Ensures angles are in the correct range.</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles = ensure_angle_range(angles, two_pole=<span style="color: rgb(210, 168, 255); font-weight: 400;">True</span>)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">SIMILARITY</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">other:</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Calculates similarity between two-pole vectors.</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> two_pole_similarity(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, other.angles)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">DISTANCE</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">other:</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> two_pole_distance(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, other.angles)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">ADD</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">other:</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>) -&gt; <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>:
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Adds two angular vectors (wraps around).</span>
+            new_angles = angular_addition(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, other.angles, two_pole=<span style="color: rgb(210, 168, 255); font-weight: 400;">True</span>)
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>(new_angles)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">SCALE</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">scalar:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">SCALAR</span>) -&gt; <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>:
+          <span style="color: rgb(139, 148, 158); font-weight: 400;">#Scales the vector</span>
+          new_angles = angular_scalar_multiplication(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, scalar, two_pole=<span style="color: rgb(210, 168, 255); font-weight: 400;">True</span>)
+          <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>(new_angles)
+
+        __repr__(): <span style="color: rgb(139, 148, 158); font-weight: 400;">#String representation</span>
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">CLASS</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>: <span style="color: rgb(139, 148, 158); font-weight: 400;">#Remains the same as before</span>
+
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># Represents a single vector using three-pole angles.</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">ATTRIBUTES</span>:
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">angles:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Angles in radians</span>
+
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">METHODS</span>:
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">INIT</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">angles:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>):
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Constructor.  Ensures angles are in the correct range.</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles = ensure_angle_range(angles, two_pole=<span style="color: rgb(210, 168, 255); font-weight: 400;">False</span>)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">SIMILARITY</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">other:</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Calculates similarity between two three-pole vectors.</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> three_pole_similarity(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, other.angles)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">DISTANCE</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">other:</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>:
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> three_pole_distance(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, other.angles)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">ADD</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">other:</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>) -&gt; <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>:
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Adds two angular vectors (wraps around).</span>
+            new_angles = angular_addition(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, other.angles, two_pole=<span style="color: rgb(210, 168, 255); font-weight: 400;">False</span>)
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>(new_angles)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">SCALE</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">scalar:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">SCALAR</span>) -&gt; <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>:
+          <span style="color: rgb(139, 148, 158); font-weight: 400;">#Scales the vector</span>
+          new_angles = angular_scalar_multiplication(<span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angles, scalar, two_pole=<span style="color: rgb(210, 168, 255); font-weight: 400;">False</span>)
+          <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>(new_angles)
+
+        __repr__(): <span style="color: rgb(139, 148, 158); font-weight: 400;">#String representation</span>
+
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">CLASS</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">HierarchicalThetaEmbeddingModel</span>:  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Renamed class - more generic</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">ATTRIBUTES</span>:
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">tokenizer:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">PRETRAINED_TOKENIZER</span>
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">sentence_encoder:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">PRETRAINED_MODEL</span>
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">base_categories:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">INTEGER</span>
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">max_level:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">INTEGER</span>
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">sentence_limit:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">INTEGER</span>
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">angle_transformations:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">LIST</span> of <span style="color: rgb(121, 192, 255); font-weight: 400;">LAYERS</span>
+        <span style="color: rgb(255, 166, 87); font-weight: 400;">pole_type:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">STRING</span>  <span style="color: rgb(139, 148, 158); font-weight: 400;"># "two_pole" or "three_pole"</span>
+
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">METHODS</span>:
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">INIT</span>(pretrained_model_name, base_categories, max_level, sentence_limit, pole_type=<span style="color: rgb(165, 214, 255); font-weight: 400;">"three_pole"</span>, ...): <span style="color: rgb(139, 148, 158); font-weight: 400;">#Added pole_type</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.tokenizer = <span style="color: rgb(121, 192, 255); font-weight: 400;">LOAD_TOKENIZER</span>(pretrained_model_name)
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.sentence_encoder = <span style="color: rgb(121, 192, 255); font-weight: 400;">LOAD_MODEL</span>(pretrained_model_name)
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.base_categories = base_categories
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.max_level = max_level
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.sentence_limit = sentence_limit
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.pole_type = pole_type <span style="color: rgb(139, 148, 158); font-weight: 400;">#Store pole type</span>
+
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angle_transformations = nn.<span style="color: rgb(210, 168, 255); font-weight: 400;">ModuleList</span>() <span style="color: rgb(139, 148, 158); font-weight: 400;">#Use ModuleList for layers</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> level <span style="color: rgb(121, 192, 255); font-weight: 400;">FROM</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">0</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TO</span> <span style="color: rgb(255, 166, 87); font-weight: 400;">max_level:</span>
+                num_angles = base_categories * (<span style="color: rgb(121, 192, 255); font-weight: 400;">2</span> ** level)
+                <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.angle_transformations.<span style="color: rgb(121, 192, 255); font-weight: 400;">APPEND</span>(nn.<span style="color: rgb(210, 168, 255); font-weight: 400;">Linear</span>(sentence_encoder.config.hidden_size, num_angles)) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Linear layer for angle transformation</span>
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">FORWARD</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">input_text:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">STRING</span>, <span style="color: rgb(255, 166, 87); font-weight: 400;">max_level_override:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">INTEGER</span> = <span style="color: rgb(210, 168, 255); font-weight: 400;">None</span>) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">LIST</span> of <span style="color: rgb(121, 192, 255); font-weight: 400;">LISTS</span> of (<span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">or</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>): <span style="color: rgb(139, 148, 158); font-weight: 400;">#Return type depends on pole_type</span>
+            sentences = <span style="color: rgb(121, 192, 255); font-weight: 400;">SPLIT_TEXT</span>(input_text)
+            all_level_embeddings = []
+            angular_vector_class = <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">if</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.pole_type == <span style="color: rgb(165, 214, 255); font-weight: 400;">"three_pole"</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">else</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span> <span style="color: rgb(139, 148, 158); font-weight: 400;">#Dynamically choose class</span>
+
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> level <span style="color: rgb(121, 192, 255); font-weight: 400;">FROM</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">0</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TO</span> (max_level_override <span style="color: rgb(121, 192, 255); font-weight: 400;">OR</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.max_level):
+                level_embeddings = []
+                <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> sentence <span style="color: rgb(121, 192, 255); font-weight: 400;">IN</span> <span style="color: rgb(255, 166, 87); font-weight: 400;">sentences:</span>
+                    sentence_embedding = <span style="color: rgb(121, 192, 255); font-weight: 400;">ENCODE_SENTENCE</span>(sentence)  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Using pretrained model</span>
+                    num_angles = <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.base_categories * (<span style="color: rgb(121, 192, 255); font-weight: 400;">2</span> ** level)
+                    angles = <span style="color: rgb(121, 192, 255); font-weight: 400;">TRANSFORM_TO_ANGLES</span>(sentence_embedding, level, num_angles) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Output of the layer</span>
+                    angles = torch.sigmoid(angles) * (<span style="color: rgb(121, 192, 255); font-weight: 400;">2</span> * math.pi) <span style="color: rgb(255, 123, 114); font-weight: 400;">if</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">SELF</span>.pole_type == <span style="color: rgb(165, 214, 255); font-weight: 400;">"three_pole"</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">else</span> torch.sigmoid(angles) * math.pi <span style="color: rgb(139, 148, 158); font-weight: 400;">#Scale angles based on pole_type</span>
+                    level_embeddings.<span style="color: rgb(121, 192, 255); font-weight: 400;">APPEND</span>(angular_vector_class(angles.squeeze())) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Use dynamic class</span>
+
+                all_level_embeddings.<span style="color: rgb(121, 192, 255); font-weight: 400;">APPEND</span>(level_embeddings)
+
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">GROUP_EMBEDDINGS</span>(all_level_embeddings)
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">SPLIT_TEXT</span>(text):
+            <span style="color: rgb(139, 148, 158); font-weight: 400;">#Split intelligently</span>
+            ...
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">GROUP_EMBEDDINGS</span>(all_level_embeddings):
+            <span style="color: rgb(139, 148, 158); font-weight: 400;">#Recursive grouping into arrays</span>
+            ...
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">COMPUTE_SIMILARITY</span>(<span style="color: rgb(255, 166, 87); font-weight: 400;">embeddings1:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">LIST</span> of <span style="color: rgb(121, 192, 255); font-weight: 400;">LISTS</span> of (<span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">or</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>), <span style="color: rgb(255, 166, 87); font-weight: 400;">embeddings2:</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">LIST</span> of <span style="color: rgb(121, 192, 255); font-weight: 400;">LISTS</span> of (<span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">or</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>)) -&gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">TENSOR</span>: <span style="color: rgb(139, 148, 158); font-weight: 400;">#Type aware similarity</span>
+            <span style="color: rgb(139, 148, 158); font-weight: 400;"># Recursively computes similarity between two hierarchies, now pole-type aware.</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> recursive_similarity(group1, group2):
+                <span style="color: rgb(121, 192, 255); font-weight: 400;">IF</span> isinstance(group1, (<span style="color: rgb(210, 168, 255); font-weight: 400;">TwoPoleAngularVector</span>, <span style="color: rgb(210, 168, 255); font-weight: 400;">ThreePoleAngularVector</span>)): <span style="color: rgb(139, 148, 158); font-weight: 400;">#Check for both classes</span>
+                    <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> group1.<span style="color: rgb(121, 192, 255); font-weight: 400;">SIMILARITY</span>(group2).mean()  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Use the class method - polymorphic dispatch</span>
+
+                similarities = []
+                <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> subgroup1, subgroup2 <span style="color: rgb(121, 192, 255); font-weight: 400;">IN</span> zip(group1, group2):
+                    similarities.<span style="color: rgb(121, 192, 255); font-weight: 400;">APPEND</span>(recursive_similarity(subgroup1, subgroup2))
+                <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> (<span style="color: rgb(121, 192, 255); font-weight: 400;">SUM</span>(similarities) / <span style="color: rgb(121, 192, 255); font-weight: 400;">LENGTH</span>(similarities)) <span style="color: rgb(121, 192, 255); font-weight: 400;">IF</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">LENGTH</span>(similarities) &gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">0</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">ELSE</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">0.0</span>
+
+            total_similarity = <span style="color: rgb(121, 192, 255); font-weight: 400;">0.0</span>
+            total_weight = <span style="color: rgb(121, 192, 255); font-weight: 400;">0.0</span>
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> level <span style="color: rgb(121, 192, 255); font-weight: 400;">FROM</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">0</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TO</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">LENGTH</span>(embeddings1) - <span style="color: rgb(121, 192, 255); font-weight: 400;">1</span>:
+                level_similarity = recursive_similarity(embeddings1[level][<span style="color: rgb(121, 192, 255); font-weight: 400;">0</span>], embeddings2[level][<span style="color: rgb(121, 192, 255); font-weight: 400;">0</span>])
+                weight = <span style="color: rgb(121, 192, 255); font-weight: 400;">2</span> ** level
+                total_similarity += level_similarity * weight
+                total_weight += weight
+
+            <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> (total_similarity / total_weight) <span style="color: rgb(121, 192, 255); font-weight: 400;">IF</span> total_weight &gt; <span style="color: rgb(121, 192, 255); font-weight: 400;">0</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">ELSE</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">0.0</span>
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">SAVE</span>(path):
+            <span style="color: rgb(139, 148, 158); font-weight: 400;">#Saves parameters</span>
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">LOAD</span>(path):
+           <span style="color: rgb(139, 148, 158); font-weight: 400;">#Load parameters</span>
+
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># --- Training Example (Conceptual) ---</span>
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># ... (Dataset loading, DataLoader setup) ...</span>
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 1. Initialize Model and Optimizer</span>
+model = <span style="color: rgb(210, 168, 255); font-weight: 400;">HierarchicalThetaEmbeddingModel</span>(pretrained_model_name=<span style="color: rgb(165, 214, 255); font-weight: 400;">"all-mpnet-base-v2"</span>, base_categories=<span style="color: rgb(121, 192, 255); font-weight: 400;">4</span>, max_level=<span style="color: rgb(121, 192, 255); font-weight: 400;">2</span>, pole_type=<span style="color: rgb(165, 214, 255); font-weight: 400;">"three_pole"</span>) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Example: Three-pole model</span>
+optimizer = <span style="color: rgb(210, 168, 255); font-weight: 400;">Adam</span>W(model.parameters(), lr=<span style="color: rgb(121, 192, 255); font-weight: 400;">1e-5</span>) <span style="color: rgb(139, 148, 158); font-weight: 400;"># Or other optimizer</span>
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 2. Custom Loss Function (Conceptual - needs to be implemented based on your choice)</span>
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FUNCTION</span> custom_loss(embeddings1, embeddings2, targets, inputs1=<span style="color: rgb(210, 168, 255); font-weight: 400;">None</span>, inputs2=<span style="color: rgb(210, 168, 255); font-weight: 400;">None</span>): <span style="color: rgb(139, 148, 158); font-weight: 400;">#Added inputs as example for concept loss</span>
+    similarity_score = model.<span style="color: rgb(121, 192, 255); font-weight: 400;">COMPUTE_SIMILARITY</span>(embeddings1, embeddings2) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Use model's similarity function</span>
+    similarity_loss = <span style="color: rgb(121, 192, 255); font-weight: 400;">1.0</span> - similarity_score <span style="color: rgb(255, 123, 114); font-weight: 400;">if</span> targets == <span style="color: rgb(121, 192, 255); font-weight: 400;">1</span> <span style="color: rgb(255, 123, 114); font-weight: 400;">else</span> torch.relu(similarity_score - <span style="color: rgb(121, 192, 255); font-weight: 400;">0.5</span>) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Example Contrastive-like loss, adjust thresholds/margin</span>
+
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># --- Optional: Concept Classification Loss (Example) ---</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">IF</span> inputs1 <span style="color: rgb(121, 192, 255); font-weight: 400;">IS</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">NOT</span> <span style="color: rgb(210, 168, 255); font-weight: 400;">None</span>: <span style="color: rgb(139, 148, 158); font-weight: 400;">#Example: if input text is available, could add concept classification</span>
+        <span style="color: rgb(139, 148, 158); font-weight: 400;"># --- (Assume you have a way to get concept labels for inputs - e.g., from dataset) ---</span>
+        concept_labels1 = <span style="color: rgb(121, 192, 255); font-weight: 400;">GET_CONCEPT_LABELS</span>(inputs1) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Function to get labels - needs to be defined</span>
+        concept_labels2 = <span style="color: rgb(121, 192, 255); font-weight: 400;">GET_CONCEPT_LABELS</span>(inputs2)
+
+        <span style="color: rgb(139, 148, 158); font-weight: 400;"># --- (Assume you have a classifier to predict concepts from embeddings - needs to be implemented in model or separately) ---</span>
+        predicted_concepts1 = <span style="color: rgb(121, 192, 255); font-weight: 400;">PREDICT_CONCEPTS</span>(embeddings1) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Function to predict concepts</span>
+        predicted_concepts2 = <span style="color: rgb(121, 192, 255); font-weight: 400;">PREDICT_CONCEPTS</span>(embeddings2)
+
+        concept_loss1 = <span style="color: rgb(121, 192, 255); font-weight: 400;">CROSS_ENTROPY_LOSS</span>(predicted_concepts1, concept_labels1)
+        concept_loss2 = <span style="color: rgb(121, 192, 255); font-weight: 400;">CROSS_ENTROPY_LOSS</span>(predicted_concepts2, concept_labels2)
+        total_concept_loss = concept_loss1 + concept_loss2
+        combined_loss = similarity_loss + <span style="color: rgb(121, 192, 255); font-weight: 400;">0.1</span> * total_concept_loss <span style="color: rgb(139, 148, 158); font-weight: 400;">#Weighted combination</span>
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> combined_loss
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">ELSE</span>:
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">RETURN</span> similarity_loss
+
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 3. Training Loop</span>
+num_epochs = <span style="color: rgb(121, 192, 255); font-weight: 400;">10</span>
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> epoch <span style="color: rgb(121, 192, 255); font-weight: 400;">FROM</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">1</span> <span style="color: rgb(121, 192, 255); font-weight: 400;">TO</span> <span style="color: rgb(255, 166, 87); font-weight: 400;">num_epochs:</span>
+    model.<span style="color: rgb(121, 192, 255); font-weight: 400;">TRAIN</span>() <span style="color: rgb(139, 148, 158); font-weight: 400;">#Set to training mode</span>
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> batch <span style="color: rgb(121, 192, 255); font-weight: 400;">IN</span> <span style="color: rgb(255, 166, 87); font-weight: 400;">dataloader:</span> <span style="color: rgb(139, 148, 158); font-weight: 400;">#Iterate through your dataset</span>
+        inputs1_batch, inputs2_batch, targets_batch = batch <span style="color: rgb(139, 148, 158); font-weight: 400;">#Assuming dataset returns pairs and similarity targets</span>
+        optimizer.<span style="color: rgb(121, 192, 255); font-weight: 400;">ZERO_GRAD</span>()
+
+        embeddings1_batch = model.<span style="color: rgb(121, 192, 255); font-weight: 400;">FORWARD</span>(inputs1_batch)
+        embeddings2_batch = model.<span style="color: rgb(121, 192, 255); font-weight: 400;">FORWARD</span>(inputs2_batch)
+
+        loss = custom_loss(embeddings1_batch, embeddings2_batch, targets_batch, inputs1_batch, inputs2_batch) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Pass inputs for potential concept loss</span>
+
+        loss.<span style="color: rgb(121, 192, 255); font-weight: 400;">BACKWARD</span>()
+        optimizer.<span style="color: rgb(121, 192, 255); font-weight: 400;">STEP</span>()
+
+        <span style="color: rgb(121, 192, 255); font-weight: 400;">PRINT</span>(f<span style="color: rgb(165, 214, 255); font-weight: 400;">"Epoch: {epoch}, Loss: {loss.item()}"</span>)
+
+    <span style="color: rgb(139, 148, 158); font-weight: 400;"># ... (Optional: Validation loop, saving checkpoints) ...</span>
+
+
+<span style="color: rgb(121, 192, 255); font-weight: 400;">PRINT</span>(<span style="color: rgb(165, 214, 255); font-weight: 400;">"Training Finished!"</span>)
+
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># --- Inference Example ---</span>
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 1. Load Trained Model</span>
+model = <span style="color: rgb(210, 168, 255); font-weight: 400;">HierarchicalThetaEmbeddingModel</span>.<span style="color: rgb(121, 192, 255); font-weight: 400;">LOAD</span>(<span style="color: rgb(165, 214, 255); font-weight: 400;">"path/to/saved/model"</span>)
+model.<span style="color: rgb(121, 192, 255); font-weight: 400;">EVAL</span>()  <span style="color: rgb(139, 148, 158); font-weight: 400;"># Set to evaluation mode</span>
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 2. Input Sentence</span>
+input_sentence = <span style="color: rgb(165, 214, 255); font-weight: 400;">"This is an example sentence for inference."</span>
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 3. Get Hierarchical Theta Embeddings</span>
+embeddings = model.<span style="color: rgb(121, 192, 255); font-weight: 400;">FORWARD</span>(input_sentence)
+
+<span style="color: rgb(139, 148, 158); font-weight: 400;"># 4. Embeddings is a LIST of LISTS of (TwoPoleAngularVector or ThreePoleAngularVector)</span>
+<span style="color: rgb(139, 148, 158); font-weight: 400;">#    Access and inspect the embeddings at different levels.</span>
+<span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> level_idx, level_embedding_list <span style="color: rgb(121, 192, 255); font-weight: 400;">IN</span> enumerate(embeddings):
+    print(f<span style="color: rgb(165, 214, 255); font-weight: 400;">"Level {level_idx} Embeddings:"</span>)
+    <span style="color: rgb(121, 192, 255); font-weight: 400;">FOR</span> sentence_embedding <span style="color: rgb(121, 192, 255); font-weight: 400;">IN</span> <span style="color: rgb(255, 166, 87); font-weight: 400;">level_embedding_list:</span>
+        print(f<span style="color: rgb(165, 214, 255); font-weight: 400;">"  Sentence Embedding Angles: {sentence_embedding.angles}"</span>) <span style="color: rgb(139, 148, 158); font-weight: 400;">#Access angles via .angles attribute</span></pre>
+
+</div>
+
+<p>Notes: the pseudo code is heavily incomplete. TwoPoleAngularVector and ThreePoleAngularVector would be a unique class, and the dynamic detail level management is absent.</p>
+
+
+</body>
+
+</html>
