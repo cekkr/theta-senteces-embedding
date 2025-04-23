@@ -50,7 +50,7 @@ class BamThetaWebGPU {
           @group(0) @binding(0) var<uniform> config: BamConfig;
           @group(0) @binding(1) var<storage, read> input1: array<u32>; // Use u32 for 16-bit BAM values
           @group(0) @binding(2) var<storage, read> input2: array<u32>;
-          @group(0) @binding(3) var<storage, write> output: array<u32>;
+          @group(0) @binding(3) var<storage, read_write> output: array<u32>;
   
           // Simple BAM operations
           fn addBam(a: u32, b: u32) -> u32 {
@@ -62,11 +62,11 @@ class BamThetaWebGPU {
           }
           
           fn compareBam(a: u32, b: u32) -> i32 {
-            var diff = (a as i32) - (b as i32);
+            var diff = i32(a) - i32(b);
             if (diff > 32767) {
-              diff -= 65536;
+                diff -= 65536;
             } else if (diff < -32768) {
-              diff += 65536;
+                diff += 65536;
             }
             return diff;
           }
@@ -685,16 +685,46 @@ class BamTheta {
   FastBamTheta._initialized = false;
   FastBamTheta.sinTable = null;
   FastBamTheta.cosTable = null;
+
+/**
+ * Convert degrees to BAM format (16-bit integer 0-65535)
+ * @param {number} degrees - Angle in degrees
+ * @returns {number} BAM angle as integer
+ */
+function degreesToBam(degrees) {
+    return Math.round((degrees % 360) * 65536 / 360) & 0xFFFF;
+  }
   
-  // Export the API
-  export {
-    BamTheta,
-    FastBamTheta,
-    addThetaArrays
-  };
+  /**
+   * Convert BAM to degrees
+   * @param {number} bam - BAM angle (0-65535)
+   * @returns {number} Angle in degrees (0-360)
+   */
+  function bamToDegrees(bam) {
+    return (bam * 360) / 65536;
+  }
   
+  /**
+   * Get sine and cosine of a BAM angle
+   * @param {number} bam - BAM angle (0-65535)
+   * @param {number} precision - Optional precision factor (default=1000)
+   * @returns {Object} Object with sin and cos properties
+   */
+  function bamSinCos(bam, precision = 1000) {
+    const radians = (bam * 2 * Math.PI) / 65536;
+    return {
+      sin: Math.round(Math.sin(radians) * precision),
+      cos: Math.round(Math.cos(radians) * precision)
+    };
+  }
+
   // Export the API
   export {
     BamThetaWebGPU,
-    BamTheta
+    BamTheta,
+    FastBamTheta,
+    addThetaArrays,
+    degreesToBam,
+    bamToDegrees,
+    bamSinCos
   };
