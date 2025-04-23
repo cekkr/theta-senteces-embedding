@@ -4,6 +4,8 @@
  * This class provides methods to represent and manipulate angles
  * using 8-bit integer coordinates (int8) for efficient GPU computation.
  */
+
+// note: seems not working
 class IntTheta2WebGPU {
     constructor() {
       this.device = null;
