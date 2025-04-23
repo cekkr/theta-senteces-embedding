@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntTheta2 WebGPU Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .output {
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      padding: 12px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      margin-top: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .canvas-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    label {
+      width: 120px;
+    }
+    input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>IntTheta2 WebGPU Demo</h1>
+  <div id="status" class="card">
+    <h2>WebGPU Status</h2>
+    <div id="webgpu-status">Checking WebGPU availability...</div>
+  </div>
+
+  <div class="card">
+    <h2>IntTheta2 Conversions</h2>
+    <div class="input-group">
+      <label for="degrees-input">Degrees:</label>
+      <input type="number" id="degrees-input" min="0" max="360" value="45">
+      <button id="convert-to-int8">Convert to Int8</button>
+    </div>
+    <div class="output" id="theta-output"></div>
+    
+    <div class="input-group">
+      <label for="x-input">X (int8):</label>
+      <input type="number" id="x-input" min="-127" max="127" value="90">
+      <label for="y-input">Y (int8):</label>
+      <input type="number" id="y-input" min="-127" max="127" value="90">
+      <button id="convert-to-degrees">Convert to Degrees</button>
+    </div>
+    <div class="output" id="degrees-output"></div>
+  </div>
+
+  <div class="card">
+    <h2>Vector Addition Test</h2>
+    <div class="input-group">
+      <label>Array 1:</label>
+      <input type="text" id="array1-input" value="0, 45, 90, 135, 180, 225, 270, 315">
+    </div>
+    <div class="input-group">
+      <label>Array 2:</label>
+      <input type="text" id="array2-input" value="10, 20, 30, 40, 50, 60, 70, 80">
+    </div>
+    <button id="run-array-test">Run Array Test</button>
+    <div class="output" id="array-output"></div>
+  </div>
+
+  <div class="card">
+    <h2>Visual Representation</h2>
+    <div class="canvas-container">
+      <canvas id="theta-canvas" width="400" height="400"></canvas>
+    </div>
+    <div class="input-group">
+      <label for="visual-angle1">Angle 1 (°):</label>
+      <input type="number" id="visual-angle1" min="0" max="360" value="45">
+    </div>
+    <div class="input-group">
+      <label for="visual-angle2">Angle 2 (°):</label>
+      <input type="number" id="visual-angle2" min="0" max="360" value="90">
+    </div>
+    <button id="visualize-sum">Visualize Sum</button>
+  </div>
+
+  <script>
+    // IntTheta2 WebGPU Implementation
+
+    // Utility function to convert degrees to IntTheta2 format (int8 x,y components)
+    function degreesToIntTheta2(degrees) {
+      const radians = degrees * (Math.PI / 180);
+      // Scale to -127 to 127 range for int8
+      const x = Math.round(Math.cos(radians) * 127);
+      const y = Math.round(Math.sin(radians) * 127);
+      return { x, y };
+    }
+
+    // Utility function to convert IntTheta2 back to degrees
+    function intTheta2ToDegrees(x, y) {
+      const degrees = Math.atan2(y, x) * (180 / Math.PI);
+      return (degrees + 360) % 360; // Normalize to 0-360
+    }
+
+    // Fast normalization for int8 coordinates
+    function normalizeInt8(x, y) {
+      const absX = Math.abs(x);
+      const absY = Math.abs(y);
+      
+      // Quick maximum norm approximation: max + min/2
+      const approximateLength = Math.max(absX, absY) + (Math.min(absX, absY) >> 1);
+      
+      if (approximateLength === 0) return { x: 0, y: 0 };
+      
+      // Scale to keep within int8 range (-127 to 127)
+      const scale = 127 / approximateLength;
+      return {
+        x: Math.round(x * scale),
+        y: Math.round(y * scale)
+      };
+    }
+
+    // Main class to set up the WebGPU computation
+    class IntTheta2WebGPU {
+      constructor() {
+        this.device = null;
+        this.shaderModule = null;
+      }
+
+      async initialize() {
+        if (!navigator.gpu) {
+          throw new Error("WebGPU is not supported in this browser.");
+        }
+
+        const adapter = await navigator.gpu.requestAdapter();
+        if (!adapter) {
+          throw new Error("Failed to get GPU adapter.");
+        }
+
+        this.device = await adapter.requestDevice();
+        
+        // Create shader module with the IntTheta2 implementation
+        this.shaderModule = this.device.createShaderModule({
+          code: `
+            // Structure to represent IntTheta2 with int8 components
+            struct IntTheta2 {
+              x: i32, // We'll use only the lower 8 bits
+              y: i32, // We'll use only the lower 8 bits
+            }
+
+            // Input arrays
+            @group(0) @binding(0) var<storage, read> input1: array<IntTheta2>;
+            @group(0) @binding(1) var<storage, read> input2: array<IntTheta2>;
+            // Output array
+            @group(0) @binding(2) var<storage, write> output: array<IntTheta2>;
+
+            // CORDIC_ANGLES precomputed (scaled for BAM format)
+            const CORDIC_ANGLES = array<i32, 10>(
+              11520,  // 45.0 degrees
+              6801,   // 26.57 degrees
+              3593,   // 14.04 degrees
+              1824,   // 7.13 degrees
+              916,    // 3.58 degrees
+              458,    // 1.79 degrees
+              229,    // 0.89 degrees
+              115,    // 0.44 degrees
+              57,     // 0.22 degrees
+              29      // 0.11 degrees
+            );
+
+            // CORDIC gain factor (scaled by 1024)
+            const CORDIC_GAIN: i32 = 607;  // ~= 1/1.647 * 1000
+
+            // Fast normalization for int8 coordinates
+            fn normalizeInt8(vec: IntTheta2) -> IntTheta2 {
+              var result: IntTheta2;
+              
+              let absX = abs(vec.x);
+              let absY = abs(vec.y);
+              
+              // Quick maximum norm approximation: max + min/2
+              let approxLength = max(absX, absY) + (min(absX, absY) >> 1);
+              
+              if (approxLength > 0) {
+                // Scale to keep within int8 range (-127 to 127)
+                let scale = 127;
+                result.x = (vec.x * scale) / approxLength;
+                result.y = (vec.y * scale) / approxLength;
+              } else {
+                result.x = 0;
+                result.y = 0;
+              }
+              
+              // Ensure we're in int8 range
+              result.x = clamp(result.x, -127, 127);
+              result.y = clamp(result.y, -127, 127);
+              
+              return result;
+            }
+
+            // Get BAM representation (Binary Angle Measurement)
+            fn getBam(theta: IntTheta2) -> i32 {
+              // We're using atan2 approximation
+              let absX = abs(theta.x);
+              let absY = abs(theta.y);
+              
+              // Fast atan2 approximation
+              var angle: i32;
+              if (absX > absY) {
+                let t = (absY << 8) / max(absX, 1); // Q8 format
+                angle = 256 - (256 * t) / (t * t + 512); // in 1/1024 of circle
+              } else {
+                let t = (absX << 8) / max(absY, 1); // Q8 format
+                angle = 768 - (256 * t) / (t * t + 512); // in 1/1024 of circle
+              }
+              
+              // Adjust for quadrant
+              if (theta.x < 0) {
+                if (theta.y < 0) {
+                  angle = 512 - angle; // Third quadrant
+                } else {
+                  angle = 512 + angle; // Second quadrant
+                }
+              } else if (theta.y < 0) {
+                angle = 1024 - angle; // Fourth quadrant
+              }
+              
+              // Convert to 0-65535 BAM range (0-360 degrees)
+              return (angle * 64) & 0xFFFF;
+            }
+
+            // Convert from BAM to IntTheta2
+            fn bamToIntTheta2(bam: i32) -> IntTheta2 {
+              var result: IntTheta2;
+              
+              // Use lookup table approach for common angles
+              let angleSector = (bam >> 12) & 0xF; // 0-15 for 24-bit sectors
+              
+              switch(angleSector) {
+                case 0: { // 0-22.5 degrees
+                  result.x = 127;
+                  result.y = (bam * 127) / 4096;
+                  break;
+                }
+                case 1: { // 22.5-45 degrees
+                  let t = bam - 4096;
+                  result.x = 127 - (t * 127) / 4096;
+                  result.y = 127 * t / 4096;
+                  break;
+                }
+                case 2: { // 45-67.5 degrees
+                  let t = bam - 8192;
+                  result.x = 127 - (t * 127) / 4096;
+                  result.y = 127;
+                  break;
+                }
+                case 3: { // 67.5-90 degrees
+                  let t = bam - 12288;
+                  result.x = 0 - (t * 127) / 4096;
+                  result.y = 127;
+                  break;
+                }
+                case 4: { // 90-112.5 degrees
+                  let t = bam - 16384;
+                  result.x = -127 * t / 4096;
+                  result.y = 127;
+                  break;
+                }
+                case 5: { // 112.5-135 degrees
+                  let t = bam - 20480;
+                  result.x = -127;
+                  result.y = 127 - (t * 127) / 4096;
+                  break;
+                }
+                case 6: { // 135-157.5 degrees
+                  let t = bam - 24576;
+                  result.x = -127;
+                  result.y = 127 - (t * 127) / 4096;
+                  break;
+                }
+                case 7: { // 157.5-180 degrees
+                  let t = bam - 28672;
+                  result.x = -127;
+                  result.y = 0 - (t * 127) / 4096;
+                  break;
+                }
+                case 8: { // 180-202.5 degrees
+                  let t = bam - 32768;
+                  result.x = -127;
+                  result.y = -127 * t / 4096;
+                  break;
+                }
+                case 9: { // 202.5-225 degrees
+                  let t = bam - 36864;
+                  result.x = -127 + (t * 127) / 4096;
+                  result.y = -127;
+                  break;
+                }
+                case 10: { // 225-247.5 degrees
+                  let t = bam - 40960;
+                  result.x = -127 + (t * 127) / 4096;
+                  result.y = -127;
+                  break;
+                }
+                case 11: { // 247.5-270 degrees
+                  let t = bam - 45056;
+                  result.x = 0 + (t * 127) / 4096;
+                  result.y = -127;
+                  break;
+                }
+                case 12: { // 270-292.5 degrees
+                  let t = bam - 49152;
+                  result.x = 127 * t / 4096;
+                  result.y = -127;
+                  break;
+                }
+                case 13: { // 292.5-315 degrees
+                  let t = bam - 53248;
+                  result.x = 127;
+                  result.y = -127 + (t * 127) / 4096;
+                  break;
+                }
+                case 14: { // 315-337.5 degrees
+                  let t = bam - 57344;
+                  result.x = 127;
+                  result.y = -127 + (t * 127) / 4096;
+                  break;
+                }
+                case 15: { // 337.5-360 degrees
+                  let t = bam - 61440;
+                  result.x = 127;
+                  result.y = 0 + (t * 127) / 4096;
+                  break;
+                }
+                default: {
+                  result.x = 127;
+                  result.y = 0;
+                }
+              }
+              
+              return normalizeInt8(result);
+            }
+
+            // Add two angles using CORDIC principle
+            fn addThetas(a: IntTheta2, b: IntTheta2) -> IntTheta2 {
+              // Convert first angle to BAM
+              let bamA = getBam(a);
+              
+              // Convert second angle to BAM
+              let bamB = getBam(b);
+              
+              // Add in BAM space (modulo 65536 for full circle)
+              let bamResult = (bamA + bamB) & 0xFFFF;
+              
+              // Convert back to IntTheta2
+              return bamToIntTheta2(bamResult);
+            }
+
+            // Main compute shader function
+            @compute @workgroup_size(64)
+            fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
+              let idx = global_id.x;
+              
+              // Ensure we don't go out of bounds
+              if (idx >= arrayLength(&output)) {
+                return;
+              }
+              
+              // Add the two IntTheta2 values
+              output[idx] = addThetas(input1[idx], input2[idx]);
+            }
+          `
+        });
+
+        return this;
+      }
+
+      // Create a new pipeline for the IntTheta2 operations
+      createPipeline() {
+        const computePipeline = this.device.createComputePipeline({
+          layout: 'auto',
+          compute: {
+            module: this.shaderModule,
+            entryPoint: 'main'
+          }
+        });
+        return computePipeline;
+      }
+
+      // Add two arrays of theta values
+      async addThetaArrays(thetaArray1, thetaArray2) {
+        const length = thetaArray1.length;
+        
+        if (length !== thetaArray2.length) {
+          throw new Error("Input arrays must have the same length");
+        }
+        
+        // Convert degrees arrays to IntTheta2 arrays
+        const intTheta1 = new Int32Array(length * 2);
+        const intTheta2 = new Int32Array(length * 2);
+        
+        for (let i = 0; i < length; i++) {
+          const theta1 = degreesToIntTheta2(thetaArray1[i]);
+          const theta2 = degreesToIntTheta2(thetaArray2[i]);
+          
+          intTheta1[i*2] = theta1.x;
+          intTheta1[i*2 + 1] = theta1.y;
+          
+          intTheta2[i*2] = theta2.x;
+          intTheta2[i*2 + 1] = theta2.y;
+        }
+        
+        // Create buffer for the output
+        const outputBuffer = this.device.createBuffer({
+          size: length * 2 * 4, // 2 int32 values per theta, 4 bytes per int32
+          usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        });
+        
+        // Create buffers for input data
+        const input1Buffer = this.device.createBuffer({
+          size: intTheta1.byteLength,
+          usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+          mappedAtCreation: true
+        });
+        new Int32Array(input1Buffer.getMappedRange()).set(intTheta1);
+        input1Buffer.unmap();
+        
+        const input2Buffer = this.device.createBuffer({
+          size: intTheta2.byteLength,
+          usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+          mappedAtCreation: true
+        });
+        new Int32Array(input2Buffer.getMappedRange()).set(intTheta2);
+        input2Buffer.unmap();
+        
+        // Create a buffer for reading back the results
+        const resultBuffer = this.device.createBuffer({
+          size: length * 2 * 4,
+          usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+        });
+        
+        // Create the bind group
+        const computePipeline = this.createPipeline();
+        const bindGroup = this.device.createBindGroup({
+          layout: computePipeline.getBindGroupLayout(0),
+          entries: [
+            { binding: 0, resource: { buffer: input1Buffer } },
+            { binding: 1, resource: { buffer: input2Buffer } },
+            { binding: 2, resource: { buffer: outputBuffer } }
+          ]
+        });
+        
+        // Create command encoder and compute pass
+        const commandEncoder = this.device.createCommandEncoder();
+        const computePass = commandEncoder.beginComputePass();
+        computePass.setPipeline(computePipeline);
+        computePass.setBindGroup(0, bindGroup);
+        
+        // Dispatch workgroups - one per 64 elements (or fraction thereof)
+        const workgroupsNeeded = Math.ceil(length / 64);
+        computePass.dispatchWorkgroups(workgroupsNeeded);
+        computePass.end();
+        
+        // Copy the output buffer to the result buffer for reading
+        commandEncoder.copyBufferToBuffer(
+          outputBuffer, 0,
+          resultBuffer, 0,
+          length * 2 * 4
+        );
+        
+        // Submit the command buffer
+        this.device.queue.submit([commandEncoder.finish()]);
+        
+        // Read back the results
+        await resultBuffer.mapAsync(GPUMapMode.READ);
+        const resultData = new Int32Array(resultBuffer.getMappedRange());
+        
+        // Convert the results back to degrees
+        const resultDegrees = new Array(length);
+        for (let i = 0; i < length; i++) {
+          const x = resultData[i*2];
+          const y = resultData[i*2 + 1];
+          resultDegrees[i] = intTheta2ToDegrees(x, y);
+        }
+        
+        resultBuffer.unmap();
+        
+        return resultDegrees;
+      }
+    }
+
+    // Initialize web app functionality
+    document.addEventListener('DOMContentLoaded', async () => {
+      const statusElement = document.getElementById('webgpu-status');
+      const thetaOutput = document.getElementById('theta-output');
+      const degreesOutput = document.getElementById('degrees-output');
+      const arrayOutput = document.getElementById('array-output');
+      const canvas = document.getElementById('theta-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      let intThetaGPU = null;
+      
+      // Check WebGPU support
+      try {
+        if (!navigator.gpu) {
+          statusElement.innerHTML = '<span class="error">WebGPU is not supported in this browser.</span>';
+          return;
+        }
+        
+        const adapter = await navigator.gpu.requestAdapter();
+        if (!adapter) {
+          statusElement.innerHTML = '<span class="error">Failed to get GPU adapter.</span>';
+          return;
+        }
+        
+        intThetaGPU = await new IntTheta2WebGPU().initialize();
+        statusElement.innerHTML = '<span style="color: green;">WebGPU is available and ready!</span>';
+      } catch (error) {
+        statusElement.innerHTML = `<span class="error">Error initializing WebGPU: ${error.message}</span>`;
+        return;
+      }
+      
+      // Handle degrees to IntTheta2 conversion
+      document.getElementById('convert-to-int8').addEventListener('click', () => {
+        const degrees = parseFloat(document.getElementById('degrees-input').value);
+        const theta = degreesToIntTheta2(degrees);
+        
+        thetaOutput.textContent = `Degrees: ${degrees}° → IntTheta2: { x: ${theta.x}, y: ${theta.y} }`;
+        
+        // Draw on canvas
+        drawVector(ctx, canvas.width, canvas.height, [
+          { angle: degrees, color: 'blue', label: 'Angle' }
+        ]);
+      });
+      
+      // Handle IntTheta2 to degrees conversion
+      document.getElementById('convert-to-degrees').addEventListener('click', () => {
+        const x = parseInt(document.getElementById('x-input').value);
+        const y = parseInt(document.getElementById('y-input').value);
+        const degrees = intTheta2ToDegrees(x, y);
+        
+        degreesOutput.textContent = `IntTheta2: { x: ${x}, y: ${y} } → Degrees: ${degrees.toFixed(2)}°`;
+        
+        // Draw on canvas
+        drawVector(ctx, canvas.width, canvas.height, [
+          { angle: degrees, color: 'red', label: 'Angle' }
+        ]);
+      });
+      
+      // Handle array test
+      document.getElementById('run-array-test').addEventListener('click', async () => {
+        try {
+          const array1Input = document.getElementById('array1-input').value;
+          const array2Input = document.getElementById('array2-input').value;
+          
+          // Parse input arrays
+          const array1 = array1Input.split(',').map(val => parseFloat(val.trim()));
+          const array2 = array2Input.split(',').map(val => parseFloat(val.trim()));
+          
+          if (array1.length !== array2.length) {
+            arrayOutput.textContent = "Error: Arrays must have the same length.";
+            return;
+          }
+          
+          // Calculate expected results
+          const expectedResults = array1.map((angle, i) => (angle + array2[i]) % 360);
+          
+          // Use WebGPU to calculate results
+          const webgpuResults = await intThetaGPU.addThetaArrays(array1, array2);
+          
+          // Calculate errors
+          const errors = webgpuResults.map((result, i) => Math.abs(result - expectedResults[i]));
+          const maxError = Math.max(...errors);
+          
+          // Create a table for displaying results
+          let tableHTML = '<table>';
+          tableHTML += '<tr><th>Index</th><th>Angle 1 (°)</th><th>Angle 2 (°)</th><th>Expected Sum (°)</th><th>WebGPU Result (°)</th><th>Error (°)</th></tr>';
+          
+          for (let i = 0; i < array1.length; i++) {
+            tableHTML += `<tr>
+              <td>${i}</td>
+              <td>${array1[i].toFixed(1)}</td>
+              <td>${array2[i].toFixed(1)}</td>
+              <td>${expectedResults[i].toFixed(1)}</td>
+              <td>${webgpuResults[i].toFixed(1)}</td>
+              <td>${errors[i].toFixed(2)}</td>
+            </tr>`;
+          }
+          
+          tableHTML += '</table>';
+          tableHTML += `<p>Maximum error: ${maxError.toFixed(2)}°</p>`;
+          
+          arrayOutput.innerHTML = tableHTML;
+        } catch (error) {
+          arrayOutput.textContent = `Error: ${error.message}`;
+        }
+      });
+      
+      // Handle visualize sum
+      document.getElementById('visualize-sum').addEventListener('click', async () => {
+        const angle1 = parseFloat(document.getElementById('visual-angle1').value);
+        const angle2 = parseFloat(document.getElementById('visual-angle2').value);
+        
+        // Calculate expected sum
+        const expectedSum = (angle1 + angle2) % 360;
+        
+        // Calculate using WebGPU
+        const webgpuResult = await intThetaGPU.addThetaArrays([angle1], [angle2]);
+        
+        // Draw on canvas
+        drawVector(ctx, canvas.width, canvas.height, [
+          { angle: angle1, color: 'blue', label: 'Angle 1' },
+          { angle: angle2, color: 'green', label: 'Angle 2' },
+          { angle: webgpuResult[0], color: 'red', label: 'WebGPU Sum' },
+          { angle: expectedSum, color: 'purple', label: 'Expected Sum', dashed: true }
+        ]);
+      });
+      
+      // Initial visualization
+      drawVector(ctx, canvas.width, canvas.height, [
+        { angle: 45, color: 'blue', label: 'Angle 1' },
+        { angle: 90, color: 'green', label: 'Angle 2' },
+        { angle: 135, color: 'red', label: 'Sum' }
+      ]);
+      
+      // Function to draw vectors on canvas
+      function drawVector(ctx, width, height, vectors) {
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.min(centerX, centerY) - 20;
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#ccc';
+        ctx.stroke();
+        
+        // Draw axes
+        ctx.beginPath();
+        ctx.moveTo(centerX - radius, centerY);
+        ctx.lineTo(centerX + radius, centerY);
+        ctx.moveTo(centerX, centerY - radius);
+        ctx.lineTo(centerX, centerY + radius);
+        ctx.strokeStyle = '#999';
+        ctx.stroke();
+        
+        // Draw angle markers
+        for (let i = 0; i < 360; i += 45) {
+          const radians = i * Math.PI / 180;
+          const x = centerX + radius * Math.cos(radians);
+          const y = centerY + radius * Math.sin(radians);
+          
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, 2 * Math.PI);
+          ctx.fillStyle = '#666';
+          ctx.fill();
+          
+          ctx.fillText(`${i}°`, x + 5 * Math.cos(radians), y + 5 * Math.sin(radians));
+        }
+        
+        // Draw vectors
+        vectors.forEach((vector, index) => {
+          const radians = vector.angle * Math.PI / 180;
+          const x = centerX + radius * Math.cos(radians);
+          const y = centerY + radius * Math.sin(radians);
+          
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(x, y);
+          
+          if (vector.dashed) {
+            ctx.setLineDash([5, 3]);
+          } else {
+            ctx.setLineDash([]);
+          }
+          
+          ctx.strokeStyle = vector.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.lineWidth = 1;
+          
+          // Draw arrowhead
+          const headLength = 10;
+          const angle = Math.atan2(y - centerY, x - centerX);
+          
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(
+            x - headLength * Math.cos(angle - Math.PI / 6),
+            y - headLength * Math.sin(angle - Math.PI / 6)
+          );
+          ctx.moveTo(x, y);
+          ctx.lineTo(
+            x - headLength * Math.cos(angle + Math.PI / 6),
+            y - headLength * Math.sin(angle + Math.PI / 6)
+          );
+          ctx.strokeStyle = vector.color;
+          ctx.stroke();
+          
+          // Add label
+          const labelDistance = radius + 20;
+          const labelX = centerX + labelDistance * Math.cos(radians);
+          const labelY = centerY + labelDistance * Math.sin(radians);
+          
+          ctx.fillStyle = vector.color;
+          ctx.fillText(`${vector.label} (${vector.angle.toFixed(1)}°)`, 
+            centerX + (radius + 10) * Math.cos(radians + 0.1), 
+            centerY + (radius + 10) * Math.sin(radians + 0.1));
+        });
+      }
+    });
+  </script>
+</body>
+</html>
